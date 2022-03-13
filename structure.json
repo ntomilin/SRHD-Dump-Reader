@@ -1,0 +1,31 @@
+{
+  "StarList": {
+    "StarId1": {
+      "Name": "Краа",
+      "PlanetList": [
+        {
+          "PlanetId1": {
+            "Owner": "some_value",
+            "PlanetName": "Банана",
+            "Economy": "Industrial"
+          }
+        },
+        {
+          "PlanetId2": {
+            "Owner": "None",
+            "Treasure": {
+              "HiddenItem1": {
+                "ItemId1": {
+                  "IName": "Трансфакторный маяк",
+                  "Owner": "Maloc",
+                  "Size": 7
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
+
