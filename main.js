@@ -5,28 +5,25 @@ const main = async () => {
     const saveFilesService = new SavesFilesService();
     const savesToHandle = await saveFilesService.getSavesNamesToProcess();
 
-    // savesToHandle.length = 1;
+    savesToHandle.length = 1;
 
     for (let i = 0; i < savesToHandle.length; i += 1) {
         const save = savesToHandle[i];
 
-        console.log(`${ save } (${ i }) PROCESSING`)
+        console.log(`${ save } (${ i }) PROCESSING...`)
 
         const saveProcessor = new SaveProcessor();
         await saveProcessor.process(save);
-        //console.log(saveProcessor.planets)
-        //console.log(saveProcessor.allPlanetsAreIndustrial())
         saveFilesService.addProcessedSave(save)
 
         if (!saveProcessor.allPlanetsAreIndustrial()) {
-            //console.log(`remove ${save}`);
-            await saveFilesService.removeSaveFiles(save);
-            // process.exit(0);
+            console.log(`remove ${save}`);
+            // await saveFilesService.removeSaveFiles(save);
+        } else {
+            await saveFilesService.updateDb(save, saveProcessor.items, saveProcessor.artifacts, saveProcessor.summary);
         }
 
-        // process.exit(0);
-
-        console.log(`${ save } (${ i }) PROCESSED\n`)
+        console.log(`${ save } (${ i }) PROCESSED ${i + 1}/${savesToHandle.length}`)
     }
 }
 

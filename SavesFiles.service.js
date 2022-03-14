@@ -1,5 +1,6 @@
 const fs = require('fs');
 const fsp = require('fs').promises;
+const path = require('path');
 
 class SavesFilesService {
     processedSaves = [];
@@ -8,7 +9,7 @@ class SavesFilesService {
     getAllSavesNames() {
         return new Promise((resolve) => {
             fs.readdir(this.SAVES_FOLDER, (err, files) => {
-                if(err) {
+                if (err) {
                     console.error('[ERR] Error reading saves directory:\n', err);
                     resolve([]);
                 }
@@ -18,7 +19,7 @@ class SavesFilesService {
                     const regex = /autodump[\d]{8}-[\d]{6}/;
                     const matchResult = f.match(regex);
 
-                    if(!matchResult || !matchResult[0]) {
+                    if (!matchResult || !matchResult[0]) {
                         console.error(`Skip ${ f } in regex for some reason`, err);
                         return null;
                     }
@@ -44,18 +45,37 @@ class SavesFilesService {
 
     async removeSaveFiles(save) {
         const pr = [
-            fsp.unlink(`${this.SAVES_FOLDER}/${save}.txt`),
-            fsp.unlink(`${this.SAVES_FOLDER}/${save}_map.png`),
-            fsp.unlink(`${this.SAVES_FOLDER}/${save}.sav_`),
-            fsp.unlink(`${this.SAVES_FOLDER}/${save}.report`),
+            fsp.unlink(`${ this.SAVES_FOLDER }/${ save }.txt`),
+            fsp.unlink(`${ this.SAVES_FOLDER }/${ save }_map.png`),
+            fsp.unlink(`${ this.SAVES_FOLDER }/${ save }.sav_`),
+            fsp.unlink(`${ this.SAVES_FOLDER }/${ save }.report`),
         ];
 
         try {
             await Promise.all(pr);
-            console.log(`${save} is removed`);
+            console.log(`${ save } is removed`);
         } catch (err) {
-            console.log(`${save} is NOT removed\n`, err);
+            console.log(`${ save } is NOT removed\n`, err);
         }
+    }
+
+    async updateDb(save, items, artifacts, summary) {
+        let db;
+
+        try {
+            db = require('./db.json');
+        } catch (err) {
+            db = {};
+        }
+
+        db[save] = {
+            artifacts,
+            items,
+            summary
+        };
+        
+        const dbPath = path.join(__dirname, 'db.json');
+        await fsp.writeFile(dbPath, JSON.stringify(db, '\n', '  '));
     }
 }
 

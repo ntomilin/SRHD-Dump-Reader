@@ -6,6 +6,7 @@ const STEPS = {
     PROCESS_PLANET: 'PROCESS_PLANET',
     PROCESS_TREASURES_LIST: 'PROCESS_TREASURES_LIST',
     PROCESS_TREASURE: 'PROCESS_TREASURE',
+    PROCESS_TREASURE_ID: 'PROCESS_TREASURE_ID',
 };
 
 
@@ -18,6 +19,7 @@ class StepManager {
         STEPS.PROCESS_PLANET,
         STEPS.PROCESS_TREASURES_LIST,
         STEPS.PROCESS_TREASURE,
+        STEPS.PROCESS_TREASURE_ID,
     ]);
 
     #stepCounter = 0;
@@ -59,6 +61,8 @@ class StateManager {
 
         treasureItemId: null,
         treasureItemName: null,
+
+        itemName: null,
     }
 
     getState() {
@@ -92,19 +96,6 @@ class StateManager {
 
     computeState(step) {
         const stateCopy = {...this.getState(), step};
-
-        /*if (['PROCESS_TREASURE'].indexOf(step) !== -1) {
-            stateCopy.treasureItemId = null;
-        }
-
-        if (['PROCESS_PLANET'].indexOf(step) !== -1) {
-            stateCopy.planetId = null;
-        }
-
-        if (['PROCESS_STAR'].indexOf(step) !== -1) {
-            stateCopy.starId = null;
-        }*/
-
         return stateCopy;
     }
 }
