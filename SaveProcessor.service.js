@@ -29,7 +29,9 @@ const LINES = {
 const SaveLoaderService = require('./SaveLoader.service');
 
 const { StateManager, STEPS } = require('./state')
-const stateManager = new StateManager();
+let stateManager;
+
+const LoggerService = require('./Logger.service');
 
 let processesLeft = 50;
 
@@ -45,6 +47,7 @@ class SaveProcessorService {
 
     constructor() {
         this.saveLoader = new SaveLoaderService();
+        stateManager =  new StateManager();
 
         for (const key in artifacts) {
             if (!this.summary[key]) {
@@ -94,9 +97,11 @@ class SaveProcessorService {
     _processStarName = (step, chunk) => {
         // stateManager.nextStep();
         const starName = chunk.split('=')[1];
-        stateManager.setState({ starName });
         // console.log(starName)
-        isKraa = starName === 'Краа';
+        stateManager.setState({ starName });
+        //console.log(stateManager.getState().planetName)
+        // console.log(starName)
+        // isKraa = starName === 'Краа';
     }
 
     _processPlanetList(step, chunk) {
@@ -116,6 +121,7 @@ class SaveProcessorService {
     _processPlanetName = (step, chunk) => {
         const planetName = chunk.split('=')[1];
         stateManager.setState({ planetName });
+
     }
 
     _processPlanetEconomy = (step, chunk) => {
@@ -176,6 +182,8 @@ class SaveProcessorService {
     _processHiddenItemName(step, chunk) {
         const stuffToSearch = chunk.split('=')[1];
 
+        if (!stuffToSearch) return;
+
         const isRequiredItem = artifacts.required.find(x => x === stuffToSearch);
         const isWantedItem = artifacts.wanted.find(x => x === stuffToSearch);
         const isOptionalItem = artifacts.optional.find(x => x === stuffToSearch);
@@ -189,6 +197,8 @@ class SaveProcessorService {
         if (!(isRequiredItem || isWantedItem || isOptionalItem || isItem)) {
             return false;
         }
+
+        //console.log(stateManager.getState().planetName);
 
         if (isItem) {
             if (!this.items[itemKey]) {
@@ -226,6 +236,8 @@ class SaveProcessorService {
     }
 
     _processSave() {
+        const logger = new LoggerService();
+
         for (const line of this.content) {
             let stateIsUpdated = false;
 
@@ -285,9 +297,10 @@ class SaveProcessorService {
             const newState = stateManager.getState();
 
             if (stateIsUpdated) {
-                //console.log(line);
+                // console.log(line);
                 // processesLeft -= 1;
-                // console.log(`Update state from \n[${ JSON.stringify(oldState) }] to \n[${ JSON.stringify(newState) }]`)
+                logger.log(`${line}\nUpdate state from \n[${ JSON.stringify(oldState) }] to \n[${ JSON.stringify(newState) }]`);
+                // console.log()
             }
 
             // if(processesLeft === 0) {
@@ -302,12 +315,5 @@ class SaveProcessorService {
     }
 }
 
-/*
-* ShipList ^{
-* ShipId1856 ^{
-* Health ^{
-* EqList ^{
-* ItemId112890 ^{
-* */
 
 module.exports = SaveProcessorService;

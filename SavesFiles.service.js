@@ -3,7 +3,6 @@ const fsp = require('fs').promises;
 const path = require('path');
 
 class SavesFilesService {
-    processedSaves = [];
     SAVES_FOLDER = 'C:\\Users\\Nikita\\Documents\\SpaceRangersHD\\Save';
 
     getAllSavesNames() {
@@ -35,11 +34,12 @@ class SavesFilesService {
 
     async getSavesNamesToProcess() {
         const saves = await this.getAllSavesNames();
-        return saves.filter(save => this.processedSaves.indexOf(save) === -1);
+        const processedSaves = this.getProcessedSaves();
+        return saves.filter(save => processedSaves.indexOf(save) === -1);
     }
 
     addProcessedSave(save) {
-        this.processedSaves.push(save);
+        // this.processedSaves.push(save);
         // TODO: store save
     }
 
@@ -65,17 +65,75 @@ class SavesFilesService {
         try {
             db = require('./db.json');
         } catch (err) {
-            db = {};
+            db = [];
         }
 
-        db[save] = {
-            artifacts,
+
+        // db[save] = {
+        //     artifacts,
+        //     items,
+        //     summary
+        // };
+        db.push({
+            save,
             items,
+            artifacts,
             summary
-        };
-        
+        })
+
+        this._sortDb(db);
+
         const dbPath = path.join(__dirname, 'db.json');
         await fsp.writeFile(dbPath, JSON.stringify(db, '\n', '  '));
+    }
+
+    _sortDb(db) {
+        function computeReq(obj) {
+            return Object.keys(obj.summary.required).reduce((acc, x) => {
+                return acc += obj.summary.required[x] > 0 ? 1 : 0
+            }, 0)
+        }
+
+        function computeRequiredArtifactQuantity(obj, key) {
+            return obj.summary.required[key];
+        }
+
+        if (db.length >= 2) {
+            db = db.sort((a, b) => {
+                const nReqA = computeReq(a);
+                const nReqB = computeReq(b);
+
+                if (nReqA !== nReqB) {
+                    return nReqB - nReqA;
+                }
+
+                const item1 = 'Трансфакторный маяк';
+                const nItem1A = computeReq(a, item1);
+                const nItem1B = computeReq(b, item1);
+
+                if (nItem1A !== nItem1B) {
+                    return nItem1B - nItem1A;
+                }
+
+                const item2 = 'Обливионный коннектор';
+                const nItem2A = computeReq(a, item2);
+                const nItem2B = computeReq(b, item2);
+
+                if (nItem2A !== nItem2B) {
+                    return nItem2B - nItem2A;
+                }
+            });
+        }
+    }
+
+    getProcessedSaves() {
+        let saves = [];
+        try {
+            saves = require('./db.json').map(x => x.save);
+        } catch (err) {
+            saves = [];
+        }
+        return saves;
     }
 }
 

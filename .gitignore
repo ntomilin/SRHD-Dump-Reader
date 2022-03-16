@@ -2,3 +2,5 @@ node_modules/
 .idea/
 SRHDDumpReader
 working_saves
+logs.txt
+Logger.service.js
