@@ -1,7 +1,6 @@
 const { PLANET_TREASURE, HIDDEN_ITEM, HIDDEN_ITEM_ID, HIDDEN_ITEM_NAME } = require('../constants/Lines');
-const STEPS = require("../constants/Steps");
-const items = require('../config.json').items;
-const artifacts = require('../config.json').artifacts;
+const STEPS = require('../constants/Steps');
+const { items, artifacts } = require('../config.json');
 
 class HiddenItemService {
     constructor(stateManager) {
@@ -92,7 +91,7 @@ class HiddenItemService {
         if (isItem) {
             //console.log(`${row} is item`)
             if (!state.items[itemKey]) {
-                state.items[itemKey] = [];
+                state.items[itemKey] = {};
             }
             if (!state.items[itemKey][stuffToSearch]) {
                 state.items[itemKey][stuffToSearch] = [];

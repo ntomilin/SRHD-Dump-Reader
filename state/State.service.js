@@ -25,9 +25,9 @@ class StateManager {
         items: {},
         summary: {},
         artifacts: {
-            required: [],
-            wanted: [],
-            optional: [],
+            required: {},
+            wanted: {},
+            optional: {},
         },
         planets: {
             [planets[0]]: null,
@@ -52,13 +52,27 @@ class StateManager {
     }
 
     setState({ step, starId, planetId, treasureItemId, planetName, starName, treasureItemName }) {
-        if (step !== undefined) { this.#state.step = step; }
-        if (starId !== undefined) { this.#state.starId = starId; }
-        if (planetId !== undefined) { this.#state.planetId = planetId; }
-        if (treasureItemId !== undefined) { this.#state.treasureItemId = treasureItemId; }
-        if (planetName !== undefined) { this.#state.planetName = planetName; }
-        if (starName !== undefined) { this.#state.starName = starName; }
-        if (treasureItemName !== undefined) { this.#state.treasureItemName = treasureItemName; }
+        if (step !== undefined) {
+            this.#state.step = step;
+        }
+        if (starId !== undefined) {
+            this.#state.starId = starId;
+        }
+        if (planetId !== undefined) {
+            this.#state.planetId = planetId;
+        }
+        if (treasureItemId !== undefined) {
+            this.#state.treasureItemId = treasureItemId;
+        }
+        if (planetName !== undefined) {
+            this.#state.planetName = planetName;
+        }
+        if (starName !== undefined) {
+            this.#state.starName = starName;
+        }
+        if (treasureItemName !== undefined) {
+            this.#state.treasureItemName = treasureItemName;
+        }
     }
 
     nextStep() {
@@ -72,7 +86,7 @@ class StateManager {
     }
 
     updateStep(step) {
-        const newState = {...this.getState(), step};
+        const newState = { ...this.getState(), step };
         this.setState(newState);
     }
 }

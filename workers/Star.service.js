@@ -1,5 +1,5 @@
 const { STAR_LIST, STAR_ID, STAR_NAME } = require('../constants/Lines');
-const STEPS = require("../constants/Steps");
+const STEPS = require('../constants/Steps');
 
 class StarService {
     constructor(stateManager) {

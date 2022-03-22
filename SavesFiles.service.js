@@ -63,14 +63,6 @@ class SavesFilesService {
             db = [];
         }
 
-        let itemsStr = '';
-
-        for (const key of Object.keys(items)) {
-            const artifact = Object.keys(items[key])[0];
-            //console.log(items[key][artifact]);
-            items[key] = JSON.stringify(items[key][artifact])
-        }
-
         db.push({
             save,
             items,
@@ -80,13 +72,13 @@ class SavesFilesService {
 
         this._sortDb(db);
 
+        console.dir(artifacts, { depth: null });
         const dbPath = path.join(__dirname, 'db.json');
         await fsp.writeFile(dbPath, JSON.stringify(db, null, '  '));
     }
 
     _sortDb(db) {
         function computeReq(obj) {
-            //console.log(obj);
             return Object.keys(obj.summary.required).reduce((acc, x) => {
                 return acc += obj.summary.required[x] > 0 ? 1 : 0
             }, 0)

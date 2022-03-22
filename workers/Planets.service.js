@@ -1,5 +1,5 @@
 const { PLANET_LIST, PLANET_ID, PLANET_NAME, PLANET_ECONOMY } = require('../constants/Lines')
-const STEPS = require("../constants/Steps");
+const STEPS = require('../constants/Steps');
 
 class PlanetsService {
     constructor(stateManager) {

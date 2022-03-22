@@ -1,5 +1,5 @@
 const { CLOSE_BRACKET, OPEN_BRACKET } = require('../constants/Lines');
-const STEPS = require("../constants/Steps");
+const STEPS = require('../constants/Steps');
 
 class BracketsService {
     constructor(stateManager) {
@@ -60,12 +60,10 @@ class BracketsService {
             }
         } else {
             const row = this.bracketsStack.pop();
-            //console.log(`BRACKETS POP ${row}`)
         }
     }
 
     _handleOpenBracket(row) {
-        //console.log(`BRACKETS PUSH ${row}`)
         this.bracketsStack.push(row);
     }
 }

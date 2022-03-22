@@ -1,11 +1,11 @@
 const { Transform } = require('stream')
-const path = require("path");
-const { SaveProcessor } = require('./SaveProcessor.service');
-const fs = require("fs");
-const iconv = require("iconv-lite");
+const path = require('path');
+const fs = require('fs');
+const iconv = require('iconv-lite');
 
 class SaveLoaderService {
-    constructor() {}
+    constructor() {
+    }
 
     SAVES_FOLDER = 'C:\\Users\\Nikita\\Documents\\SpaceRangersHD\\Save';
     TEMP_SAVE = (save) => path.join(__dirname, 'working_saves', `${ save }.txt`);
@@ -14,7 +14,7 @@ class SaveLoaderService {
         transform: (chunk, encoding, done) => {
             const result = chunk.toString().replace(/\n/g, '').replace(/\t/g, '');
             done(null, result);
-        }
+        },
     });
 
     getLoadedSave(save) {
@@ -30,13 +30,13 @@ class SaveLoaderService {
             })
 
             // For some reason flow stops without it
-            chunkProcessPipe.on('data', (ch) => {});
+            chunkProcessPipe.on('data', (ch) => {
+            });
 
             const str = fs.createReadStream(savePath)
                 .pipe(iconv.decodeStream('cp1251'))
                 .pipe(iconv.encodeStream('utf8'))
                 .pipe(this.minifyTransform)
-                // .pipe(fs.createWriteStream(this.TEMP_SAVE(save)))
                 .pipe(chunkProcessPipe)
 
             str.on('end', () => {
