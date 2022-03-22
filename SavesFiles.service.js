@@ -38,11 +38,6 @@ class SavesFilesService {
         return saves.filter(save => processedSaves.indexOf(save) === -1);
     }
 
-    addProcessedSave(save) {
-        // this.processedSaves.push(save);
-        // TODO: store save
-    }
-
     async removeSaveFiles(save) {
         const pr = [
             fsp.unlink(`${ this.SAVES_FOLDER }/${ save }.txt`),
@@ -68,12 +63,14 @@ class SavesFilesService {
             db = [];
         }
 
+        let itemsStr = '';
 
-        // db[save] = {
-        //     artifacts,
-        //     items,
-        //     summary
-        // };
+        for (const key of Object.keys(items)) {
+            const artifact = Object.keys(items[key])[0];
+            //console.log(items[key][artifact]);
+            items[key] = JSON.stringify(items[key][artifact])
+        }
+
         db.push({
             save,
             items,
@@ -84,11 +81,12 @@ class SavesFilesService {
         this._sortDb(db);
 
         const dbPath = path.join(__dirname, 'db.json');
-        await fsp.writeFile(dbPath, JSON.stringify(db, '\n', '  '));
+        await fsp.writeFile(dbPath, JSON.stringify(db, null, '  '));
     }
 
     _sortDb(db) {
         function computeReq(obj) {
+            //console.log(obj);
             return Object.keys(obj.summary.required).reduce((acc, x) => {
                 return acc += obj.summary.required[x] > 0 ? 1 : 0
             }, 0)
@@ -108,20 +106,22 @@ class SavesFilesService {
                 }
 
                 const item1 = 'Трансфакторный маяк';
-                const nItem1A = computeReq(a, item1);
-                const nItem1B = computeReq(b, item1);
+                const nItem1A = computeRequiredArtifactQuantity(a, item1);
+                const nItem1B = computeRequiredArtifactQuantity(b, item1);
 
                 if (nItem1A !== nItem1B) {
                     return nItem1B - nItem1A;
                 }
 
                 const item2 = 'Обливионный коннектор';
-                const nItem2A = computeReq(a, item2);
-                const nItem2B = computeReq(b, item2);
+                const nItem2A = computeRequiredArtifactQuantity(a, item2);
+                const nItem2B = computeRequiredArtifactQuantity(b, item2);
 
                 if (nItem2A !== nItem2B) {
                     return nItem2B - nItem2A;
                 }
+
+                return 0;
             });
         }
     }

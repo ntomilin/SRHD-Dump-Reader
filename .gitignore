@@ -4,3 +4,5 @@ SRHDDumpReader
 working_saves
 logs.txt
 Logger.service.js
+db_dump.json
+db.json

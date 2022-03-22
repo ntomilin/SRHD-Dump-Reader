@@ -5,8 +5,7 @@ const main = async () => {
     const saveFilesService = new SavesFilesService();
     const savesToHandle = await saveFilesService.getSavesNamesToProcess();
 
-    // savesToHandle.length = 1;
-    // savesToHandle[0] = 'autodump20220308-091105'
+    savesToHandle.length = 1;
 
     for (let i = 0; i < savesToHandle.length; i += 1) {
         const save = savesToHandle[i];
@@ -15,13 +14,16 @@ const main = async () => {
 
         const saveProcessor = new SaveProcessor();
         await saveProcessor.process(save);
-        // saveFilesService.addProcessedSave(save)
 
-        if (!saveProcessor.allPlanetsAreIndustrial()) {
-            console.log(`remove ${save}`);
-            await saveFilesService.removeSaveFiles(save);
+        //console.log(saveProcessor.allPlanetsAreIndustrial());
+
+        if (saveProcessor.allPlanetsAreIndustrial()) {
+            const state = saveProcessor.stateManager.getState();
+            // console.dir(state, { depth: 3 });
+            await saveFilesService.updateDb(save, state.items, state.artifacts, state.summary);
         } else {
-            await saveFilesService.updateDb(save, saveProcessor.items, saveProcessor.artifacts, saveProcessor.summary);
+            await saveFilesService.removeSaveFiles(save);
+            console.log(`remove ${save}`);
         }
 
         console.log(`${ save } (${ i }) PROCESSED ${i + 1}/${savesToHandle.length}`)
