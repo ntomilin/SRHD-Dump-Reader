@@ -89,7 +89,6 @@ class HiddenItemService {
         }
 
         if (isItem) {
-            //console.log(`${row} is item`)
             if (!state.items[itemKey]) {
                 state.items[itemKey] = {};
             }
@@ -99,7 +98,6 @@ class HiddenItemService {
             const { starName, planetName } = this.stateManager.getState();
             state.items[itemKey][stuffToSearch].push({ starName, planetName });
         } else {
-            //console.log(`${row} is artifact`)
             const key = isRequiredItem ? 'required' :
                 isWantedItem ? 'wanted' : 'optional';
 
@@ -114,9 +112,6 @@ class HiddenItemService {
             const { starName, planetName } = this.stateManager.getState();
             state.summary[key][stuffToSearch] += 1;
             state.artifacts[key][stuffToSearch].push({ starName, planetName });
-            // console.log(`${key}-${stuffToSearch}`)
-            // console.dir(state.artifacts[key][stuffToSearch]);
-            // console.log(`\n\n`)
         }
     }
 }

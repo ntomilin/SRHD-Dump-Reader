@@ -8,7 +8,6 @@ class SaveLoaderService {
     }
 
     SAVES_FOLDER = 'C:\\Users\\Nikita\\Documents\\SpaceRangersHD\\Save';
-    TEMP_SAVE = (save) => path.join(__dirname, 'working_saves', `${ save }.txt`);
 
     minifyTransform = new Transform({
         transform: (chunk, encoding, done) => {

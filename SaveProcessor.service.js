@@ -1,6 +1,6 @@
 const SaveLoaderService = require('./SaveLoader.service');
 
-const { StateManager } = require('./state/State.service')
+const StateManager = require('./state/State.service')
 let stateManager;
 
 const PlanetService = require('./workers/Planets.service');

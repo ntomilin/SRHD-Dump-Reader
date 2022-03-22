@@ -67,12 +67,11 @@ class SavesFilesService {
             save,
             items,
             artifacts,
-            summary
+            summary,
         })
 
         this._sortDb(db);
-
-        console.dir(artifacts, { depth: null });
+        
         const dbPath = path.join(__dirname, 'db.json');
         await fsp.writeFile(dbPath, JSON.stringify(db, null, '  '));
     }
@@ -88,34 +87,32 @@ class SavesFilesService {
             return obj.summary.required[key];
         }
 
-        if (db.length >= 2) {
-            db = db.sort((a, b) => {
-                const nReqA = computeReq(a);
-                const nReqB = computeReq(b);
+        db = db.sort((a, b) => {
+            const nReqA = computeReq(a);
+            const nReqB = computeReq(b);
 
-                if (nReqA !== nReqB) {
-                    return nReqB - nReqA;
-                }
+            if (nReqA !== nReqB) {
+                return nReqB - nReqA;
+            }
 
-                const item1 = 'Трансфакторный маяк';
-                const nItem1A = computeRequiredArtifactQuantity(a, item1);
-                const nItem1B = computeRequiredArtifactQuantity(b, item1);
+            const item1 = 'Трансфакторный маяк';
+            const nItem1A = computeRequiredArtifactQuantity(a, item1);
+            const nItem1B = computeRequiredArtifactQuantity(b, item1);
 
-                if (nItem1A !== nItem1B) {
-                    return nItem1B - nItem1A;
-                }
+            if (nItem1A !== nItem1B) {
+                return nItem1B - nItem1A;
+            }
 
-                const item2 = 'Обливионный коннектор';
-                const nItem2A = computeRequiredArtifactQuantity(a, item2);
-                const nItem2B = computeRequiredArtifactQuantity(b, item2);
+            const item2 = 'Обливионный коннектор';
+            const nItem2A = computeRequiredArtifactQuantity(a, item2);
+            const nItem2B = computeRequiredArtifactQuantity(b, item2);
 
-                if (nItem2A !== nItem2B) {
-                    return nItem2B - nItem2A;
-                }
+            if (nItem2A !== nItem2B) {
+                return nItem2B - nItem2A;
+            }
 
-                return 0;
-            });
-        }
+            return 0;
+        });
     }
 
     getProcessedSaves() {

@@ -5,8 +5,6 @@ const main = async () => {
     const saveFilesService = new SavesFilesService();
     const savesToHandle = await saveFilesService.getSavesNamesToProcess();
 
-    savesToHandle.length = 1;
-
     for (let i = 0; i < savesToHandle.length; i += 1) {
         const save = savesToHandle[i];
 
@@ -15,18 +13,17 @@ const main = async () => {
         const saveProcessor = new SaveProcessor();
         await saveProcessor.process(save);
 
-        //console.log(saveProcessor.allPlanetsAreIndustrial());
+        let saveStatus = 'PROCESSED';
 
         if (saveProcessor.allPlanetsAreIndustrial()) {
             const state = saveProcessor.stateManager.getState();
-            // console.dir(state, { depth: 3 });
             await saveFilesService.updateDb(save, state.items, state.artifacts, state.summary);
         } else {
             await saveFilesService.removeSaveFiles(save);
-            console.log(`remove ${save}`);
+            saveStatus = 'REMOVED';
         }
 
-        console.log(`${ save } (${ i }) PROCESSED ${i + 1}/${savesToHandle.length}`)
+        console.log(`${ save } (${ i }) ${saveStatus} ${i + 1}/${savesToHandle.length}`)
     }
 }
 

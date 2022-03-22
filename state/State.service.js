@@ -91,6 +91,4 @@ class StateManager {
     }
 }
 
-module.exports = {
-    StateManager,
-}
+module.exports = StateManager;
